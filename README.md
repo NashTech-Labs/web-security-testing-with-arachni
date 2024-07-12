@@ -40,3 +40,13 @@ When manually triggering the workflow, you can provide the following input:
 The workflow generates the following artifact:
 
 - **Arachni HTML Report**: The Arachni report in HTML format.
+
+## Usage
+
+To manually trigger the workflow with an optional URL input, follow these steps:
+
+1. Navigate to the "Actions" tab in your GitHub repository.
+2. Select the "Security Testing" workflow from the list.
+3. Click on the "Run workflow" button.
+4. Provide the URL of the website to scan (optional). If not specified, the default URL `http://localhost:3000` will be used.
+5. Click on the "Run workflow" button to start the workflow.
