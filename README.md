@@ -1,52 +1,179 @@
-# Security Testing Workflow
+# 🔒 Security Testing Workflow
 
-This repository contains a GitHub Actions workflow for performing security testing on a web application using Arachni, an open-source web application security scanner. The workflow involves running a vulnerable web application (OWASP Juice Shop) and scanning it for vulnerabilities.
+This repository provides a GitHub Actions-based **Security Testing Pipeline** designed to scan web applications for vulnerabilities using **Arachni**, an open-source web security scanner. The workflow includes support for scanning any given web URL and comes pre-configured with the **OWASP Juice Shop**—a deliberately insecure application used for demonstrating and validating the scanning process.
 
-## Workflow Overview
+---
+
+## 🧠 Project Overview
+
+This **TechHub** serves as a reusable security testing automation template for DevSecOps and QA teams. It helps teams:
+
+- Integrate automated security scans into CI/CD pipelines
+- Perform **Dynamic Application Security Testing (DAST)** using Arachni
+- Trigger scans on code changes or on-demand via GitHub UI
+- Generate and upload detailed HTML vulnerability reports as workflow artifacts
+
+The template is ideal for:
+- Security testing during development
+- CI pipeline hardening
+- Vulnerability monitoring of internal or external web apps
+
+---
+
+## 🚀 Workflow Overview
 
 The GitHub Actions workflow is triggered on the following events:
 
-- **Push to the master branch**
-- **Pull request targeting the master branch**
-- **Manual dispatch with an optional URL input**
+- **Push to the `master` branch**
+- **Pull request targeting the `master` branch**
+- **Manual dispatch via the GitHub Actions UI**
 
-## Workflow Steps
+---
 
-The workflow performs the following steps:
+## ⚙️ Workflow Steps
 
-1. **Checkout Repository**: Checks out the code from the repository.
-2. **Set up Docker Buildx**: Sets up Docker Buildx, required for building and running Docker images (only if the default URL is used).
-3. **Pull Juice Shop Docker Image**: Pulls the Juice Shop Docker image from Docker Hub (only if the default URL is used).
-4. **Run Juice Shop Container**: Runs the Juice Shop container (only if the default URL is used).
-5. **Get Juice Shop Container IP**: Retrieves the IP address of the running Juice Shop container (only if the default URL is used).
-6. **Wait for Juice Shop to be Ready**: Waits until the Juice Shop application is ready to accept connections (only if the default URL is used).
-7. **Download Arachni**: Downloads and extracts Arachni.
-8. **Run Arachni Scan**: Runs Arachni to scan the specified URL and generates a report.
-9. **List Arachni Output Directory**: Lists the contents of the directory containing the HTML report.
-10. **Upload Arachni HTML Report**: Uploads the Arachni HTML report as an artifact.
+The pipeline performs the following actions:
 
-## Inputs
+1. **Checkout Repository**  
+   Clones your code for access within the workflow.
 
-When manually triggering the workflow, you can provide the following input:
+2. **Set up Docker Buildx** *(conditional)*  
+   Prepares Docker for advanced image operations when testing the default local instance.
 
-- **url**: The URL of the website to scan. If not specified, defaults to `http://localhost:3000`.
+3. **Pull Juice Shop Image** *(conditional)*  
+   Retrieves the vulnerable OWASP Juice Shop Docker image.
 
-## Environment Variables
+4. **Run Juice Shop Container** *(conditional)*  
+   Launches Juice Shop locally on port 3000.
 
-- **DEFAULT_URL**: The default URL for the local Juice Shop instance, set to `http://localhost:3000`.
+5. **Get Container IP** *(conditional)*  
+   Extracts the internal IP address of the Juice Shop container.
 
-## Artifacts
+6. **Wait for App Readiness** *(conditional)*  
+   Pings the service until it becomes available.
 
-The workflow generates the following artifact:
+7. **Download Arachni**  
+   Retrieves and extracts the Arachni scanner binaries.
 
-- **Arachni HTML Report**: The Arachni report in HTML format.
+8. **Run Arachni Scan**  
+   Scans the target URL (user-specified or default Juice Shop).
 
-## Usage
+9. **List Arachni Output Directory**  
+   Shows the generated HTML scan report directory.
 
-To manually trigger the workflow with an optional URL input, follow these steps:
+10. **Upload HTML Report**  
+    Uploads the vulnerability scan report as an artifact to GitHub Actions.
 
-1. Navigate to the "Actions" tab in your GitHub repository.
-2. Select the "Security Testing" workflow from the list.
-3. Click on the "Run workflow" button.
-4. Provide the URL of the website to scan (optional). If not specified, the default URL `http://localhost:3000` will be used.
-5. Click on the "Run workflow" button to start the workflow.
+---
+
+## 📝 Inputs (Manual Dispatch)
+
+| Name | Description | Default |
+|------|-------------|---------|
+| `url` | URL of the website to scan | `http://localhost:3000` |
+
+---
+
+## 🌍 Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `DEFAULT_URL` | Default local test target (`http://localhost:3000`) |
+
+---
+
+## 📦 Artifact Generated
+
+- **Arachni HTML Report**: A detailed vulnerability scan result in HTML format, downloadable from the workflow run summary.
+
+---
+
+## 🛠️ How to Run the Workflow Manually
+
+1. Go to the **Actions** tab in your repository.
+2. Click on the **Security Testing** workflow.
+3. Press **Run workflow** (top-right).
+4. Optionally enter a `url` to scan (leave empty to use the default).
+5. Click **Run workflow** again to trigger it.
+
+---
+
+## 🔐 Security Notes
+
+- **No real applications or sensitive data** are committed or scanned.
+- Always ensure that scanning is authorized for non-local environments.
+- Use test environments for scanning external URLs.
+
+---
+
+## 📎 References
+
+- [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/)
+- [Arachni Security Scanner](https://github.com/Arachni/arachni)
+- [GitHub Actions Docs](https://docs.github.com/en/actions)
+- [Automating Application Security Testing With Arachni](https://blog.nashtechglobal.com/automating-application-security-testing-with-arachni/)
+
+---
+# 📄 How to View the Arachni HTML Report
+
+This guide explains how to download, extract, and view the HTML report generated by [Arachni](https://github.com/Arachni/arachni) — an open-source web application security scanner — as part of your GitHub Actions security testing workflow.
+
+---
+
+## 🛠️ Prerequisites
+
+- A completed GitHub Actions workflow run that includes the **Arachni HTML Report** as an artifact
+- A modern web browser (e.g., Chrome, Firefox, Edge)
+- A ZIP file extraction tool (e.g., WinRAR, 7-Zip, or built-in system extractor)
+
+---
+
+## 📥 Step 1: Download the Artifact
+
+1. Go to your repository on GitHub.
+2. Click on the **Actions** tab.
+3. Open the workflow run labeled **Security Testing** or similar.
+4. Scroll down to the **Artifacts** section at the bottom of the run summary.
+5. Click on the artifact named `arachni-html-report` to download it as a `.zip` file.
+
+---
+
+## 📂 Step 2: Extract the ZIP File
+
+1. Use any archive tool to extract the downloaded ZIP file.
+2. You should see a folder structure similar to the following:
+arachni-html-report/
+└── 2025-07-10 11_57_54 +0000.html/
+    └── css/
+    ├── fonts/
+    ├── index.html/
+    └── js/
+---
+## 🌐 Step 3: Open the HTML Report
+
+1. Open the folder with the `.html` timestamped name (e.g., `2025-07-10 11_57_54 +0000.html/`).
+2. Inside it, locate the file named `index.html`.
+3. Double-click `index.html` to open it in your default web browser, or:
+   - Right-click → **Open with** → select your preferred browser (Chrome, Firefox, Edge, etc.)
+
+---
+
+## 🧾 What You'll See
+
+- A full summary of vulnerabilities found during the scan
+- Vulnerability types (e.g., SQL Injection, XSS)
+- Severity ratings (High, Medium, Low)
+- Recommendations for remediation
+- A clean, navigable interface with filtering options
+
+---
+
+## ✅ Done!
+
+You’ve now successfully viewed your **Arachni vulnerability scan report**.
+
+---
+
+
+> 🧩 *Use this template responsibly. Ensure legal permission to scan non-local or external URLs.*
+
